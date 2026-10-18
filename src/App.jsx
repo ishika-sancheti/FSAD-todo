@@ -1,32 +1,72 @@
-function App(props) {
-    return (
-        <div className="todo app">
-            <h1>FSAD To Do App</h1>
-            <form>
-                <input 
-                    type="submit"
-                    id="new-todo-input"
-                    className="input input__lg"
-                    name="text"
-                    autoComplete="off"
-                    placeholder="Enter a to-do..."
-                />
-            </form>
-            <ul 
-                className="todo-list stack-large"
-                role="list"
-                aria-labelledby="list-heading"
-            >
-                <li className="todo-stack-small">
-                    <div className="c-cb">
-                        <input id="todo-0" type="checkbox" defaultChecked />
-                        <label className="todo-label" htmlFor="todo-0">
-                            Master React
-                        </label>
-                    </div>
-                </li>
+import AddTask from './components/AddTask.jsx';
+import TaskList from './components/TaskList.jsx'
+import { useReducer } from "react";
 
-            </ul>
-        </div>
-    )
+function tasksReducer(tasks, action) {          
+    //instruction for what to do w the task - action
+    //tasks - current task list
+    switch(action.type) {
+        case 'added':{
+            return [...tasks, {             //returns an array containing all existing tasks + new tasks defined as below
+                id:action.id,
+                text:action.text,
+                done:false
+            }];
+        }
+        case 'changed':{
+            tasks.map(t => {                //goes thru the tasks & creates a new array
+                if (t.id==action.task.id){       //matches id and finds out if this is the task we want to change
+                    return action.task;
+                }
+                else {
+                    return t;           //other tasks remain unchanged
+                }
+            })
+        }
+        case 'deleted':{
+            return tasks.filter(t=>
+                t.id!==action.id        //creates a new array w every task except the one matching the id in action
+            )
+        }
+        default: {
+            throw Error('unknown action: ' + action.type);
+        }
+    }
 }
+
+let nextId=3;
+const initialTasks=[
+    {id:0, text:'Master React', done:true},
+    {id:1, text:'Learn Redux', done:false},
+    {id:3, text:'Learn MicroFrontends', done:false}
+]
+
+export default function TaskApp() {
+    const [tasks, dispatch]=useReducer(tasksReducer, initialTasks);
+    function handleAddTask(text) {
+        dispatch( { type:'added', id:'nextId++', text:text } );
+    }
+    function handleChangeTask(task) {
+        dispatch({type:'changed', task: task});
+    }
+    function handleDeleteTask(task){
+        dispatch({type:'deleted', task:task});
+    }
+    
+    return (
+        <div className="todo-input-container">
+            <h1>FSAD To Do App</h1>
+            <AddTask onAddTask={handleAddTask} />
+            <TaskList
+                tasks={tasks}
+                onChangeTask={handleChangeTask}
+                onDeleteTask={handleDeleteTask}
+            />    
+        </div>
+    ); 
+}
+
+
+   
+
+
