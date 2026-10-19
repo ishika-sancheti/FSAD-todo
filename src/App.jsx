@@ -13,7 +13,6 @@ const initialTasks=[
 function tasksReducer(tasks, action) {          
     //instruction for what to do w the task - action
     //tasks - current task list
-    console.log();
     switch(action.type) {
         case 'added':{
             return [...tasks, {             //returns an array containing all existing tasks + new tasks defined as below
@@ -23,9 +22,9 @@ function tasksReducer(tasks, action) {
             }];
         }
         case 'changed':{
-            tasks.map(t => {                     //goes thru the tasks & creates a new array
+            return tasks.map(t => {                     //goes thru the tasks & creates a new array
                 if (t.id==action.task.id){       //matches id and finds out if this is the task we want to change
-                    return action.task.id;
+                    return action.task;
                 }
                 else {
                     return t;           //other tasks remain unchanged
@@ -67,8 +66,3 @@ export default function TaskApp() {
         </div>
     ); 
 }
-
-
-   
-
-
