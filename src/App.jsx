@@ -44,15 +44,15 @@ function tasksReducer(tasks, action) {
 
 export default function TaskApp() {
     const [tasks, dispatch]=useReducer(tasksReducer, initialTasks);
-    function handleAddTask(text) {
-        dispatch( { type:'added', id:nextId++, text:text});
-    }
-    function handleChangeTask(task) {
-        dispatch({type:'changed', task: task, id: task.id});
-    }
-    function handleDeleteTask(task){
-        dispatch({type:'deleted', task:task, id: task.id});
-    }
+    // function handleAddTask(text) {
+    //     dispatch( { type:'added', id:nextId++, text:text});
+    // }
+    // function handleChangeTask(task) {
+    //     dispatch({type:'changed', task: task, id: task.id});
+    // }
+    // function handleDeleteTask(task){
+    //     dispatch({type:'deleted', task:task, id: task.id});
+    // }
     
     return (
         <div className="todo-input-container">
