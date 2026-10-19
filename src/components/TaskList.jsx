@@ -1,44 +1,76 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { TasksContext, TasksDispatchContext } from "./TaskContext.js";
 
-function Task({task, onDelete, onChange}){
-    let taskContent;
-    taskContent=(
+function Task({ task }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const dispatch = useContext(TasksDispatchContext);
+  let taskContent;
+  if (isEditing) {
+    taskContent = (
+      <>
         <input
-            value={task.text}
-            onChange={e=> {
-                onChange({ ...task, text: e.target.value});
-            }}
-        />
+          value={task.text}
+          onChange={e => {
+            dispatch({
+              type: 'changed',
+              task: {
+                ...task,
+                text: e.target.value
+              }
+            });
+          }} />
+        <button onClick={() => setIsEditing(false)}>
+          Save
+        </button>
+      </>
     );
-    return (
-        <label>
-            <input 
-                type="checkbox"
-                checked={task.done}
-                onChange={e =>{
-                    onChange({
-                        ...task, done:e.target.checked
-                    });
-                } }
-            />
-            {taskContent}
-            <button onClick={()=> onDelete(task.id)}>Delete</button>
-        </label>
-    )
+  } else {
+    taskContent = (
+      <>
+        {task.text}
+        <button onClick={() => setIsEditing(true)}>
+          Edit
+        </button>
+      </>
+    );
+  }
+  return (
+    <label>
+      <input
+        type="checkbox"
+        checked={task.done}
+        onChange={e => {
+          dispatch({
+            type: 'changed',
+            task: {
+              ...task,
+              done: e.target.checked
+            }
+          });
+        }}
+      />
+      {taskContent}
+      <button onClick={() => {
+        dispatch({
+          type: 'deleted',
+          id: task.id
+        });
+      }}>
+        Delete
+      </button>
+    </label>
+  );
 }
 
-export default function TaskList({tasks, onDeleteTask, onChangeTask}) {
+export default function TaskList() {
+    const tasks=useContext(TasksContext);
     return (
         <ul>
             {tasks.map (task=> (
                 <li key={task.id}>
-                    <Task
-                        task={task}
-                        onDelete={onDeleteTask}
-                        onChange={onChangeTask}
-                    />
+                    <Task task={task} />
                 </li>
-            )) }
+            ))}
         </ul>
     );
 }

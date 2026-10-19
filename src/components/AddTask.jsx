@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import {TasksDispatchContext} from './TaskContext.js'
 
 export default function AddTask({onAddTask}) {
     const [text, setText]=useState('');
+    const dispatch=useContext(TasksDispatchContext);
     return(
-            <form onSubmit={e =>{
+            <form onSubmit={e=>{
                 e.preventDefault();
-                onAddTask(text);
                 setText("");
+                dispatch({
+                    type:'added',
+                    id: nextId++,
+                    text: text
+                });
             }}>
                 <input 
                     placeholder="Enter a to-do..."
@@ -17,3 +23,4 @@ export default function AddTask({onAddTask}) {
             </form>
     )
 }
+let nextId=3;
