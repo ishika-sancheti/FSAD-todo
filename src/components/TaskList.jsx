@@ -1,41 +1,12 @@
-import { useContext, useState } from "react";
+import { useContext} from "react";
 import { TasksContext, TasksDispatchContext } from "./TaskContext.js";
 
 function Task({ task }) {
-  const [isEditing, setIsEditing] = useState(false);
+  //const [isEditing, setIsEditing] = useState(false);
   const dispatch = useContext(TasksDispatchContext);
-  let taskContent;
-  if (isEditing) {
-    taskContent = (
-      <>
-        <input
-          value={task.text}
-          onChange={e => {
-            dispatch({
-              type: 'changed',
-              task: {
-                ...task,
-                text: e.target.value
-              }
-            });
-          }} />
-        <button onClick={() => setIsEditing(false)}>
-          Save
-        </button>
-      </>
-    );
-  } else {
-    taskContent = (
-      <>
-        {task.text}
-        <button onClick={() => setIsEditing(true)}>
-          Edit
-        </button>
-      </>
-    );
-  }
+   
   return (
-    <label>
+    <div>
       <input
         type="checkbox"
         checked={task.done}
@@ -44,21 +15,19 @@ function Task({ task }) {
             type: 'changed',
             task: {
               ...task,
-              done: e.target.checked
-            }
+              done: e.target.checked}
           });
         }}
       />
-      {taskContent}
+      <span>{task.text}</span>
       <button onClick={() => {
         dispatch({
           type: 'deleted',
-          id: task.id
-        });
+          id: task.id});
       }}>
         Delete
       </button>
-    </label>
+    </div>
   );
 }
 
