@@ -2,8 +2,24 @@ import AddTask from './components/AddTask.jsx';
 import TaskList from './components/TaskList.jsx'
 import {TasksContext, TasksDispatchContext} from './components/TaskContext.js'
 import { useReducer } from "react";
+import { useEffect } from 'react';
 
-let nextId=3;
+let storageKey="FSAD-todo"
+
+function useLocallyPersistedReducer(tasksReducer, defaultState, storageKey, init=null){
+    const hookVars=useReducer(tasksReducer, defaultState, (defaultState) => {
+        const persisted=JSON.parse(localStorage.getItem(storageKey))
+        return persisted!==null 
+            ? persisted
+            : init!==null?init(defaultState):defaultState
+    } )
+    useEffect( ()=> {
+        localStorage.setItem(storageKey, JSON.stringify(hookVars[0]))
+    }, [storageKey, hookVars[0]])
+    return hookVars
+}
+
+//let nextId=3;
 const initialTasks=[
     {id:0, text:'Master React', done:true},
     {id:1, text:'Learn Redux', done:false},
@@ -13,10 +29,19 @@ const initialTasks=[
 function tasksReducer(tasks, action) {          
     //instruction for what to do w the task - action
     //tasks - current task list
+    
     switch(action.type) {
         case 'added':{
+            let nextId;
+            if (tasks.length==0) {
+                nextId=0;
+            }
+            else {
+                nextId=Math.max(...tasks.map(task => task.id)) + 1;
+            }
+            
             return [...tasks, {             //returns an array containing all existing tasks + new tasks defined as below
-                id:nextId++,
+                id:nextId,
                 text:action.text,
                 done:false
             }];
@@ -43,16 +68,7 @@ function tasksReducer(tasks, action) {
 }
 
 export default function TaskApp() {
-    const [tasks, dispatch]=useReducer(tasksReducer, initialTasks);
-    // function handleAddTask(text) {
-    //     dispatch( { type:'added', id:nextId++, text:text});
-    // }
-    // function handleChangeTask(task) {
-    //     dispatch({type:'changed', task: task, id: task.id});
-    // }
-    // function handleDeleteTask(task){
-    //     dispatch({type:'deleted', task:task, id: task.id});
-    // }
+    const [tasks, dispatch]=useLocallyPersistedReducer(tasksReducer, initialTasks, storageKey);   //creation of tasks
     
     return (
         <div className="todo-input-container">

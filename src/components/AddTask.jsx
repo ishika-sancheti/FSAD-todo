@@ -10,7 +10,7 @@ export default function AddTask({onAddTask}) {
                 setText("");
                 dispatch({
                     type:'added',
-                    id: nextId++,
+                    //id: nextId++,
                     text: text
                 });
             }}>
@@ -23,4 +23,4 @@ export default function AddTask({onAddTask}) {
             </form>
     )
 }
-let nextId=3;
+//let nextId=3;
