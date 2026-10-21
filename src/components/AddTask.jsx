@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import {TasksDispatchContext} from './TaskContext.js'
 
-export default function AddTask({onAddTask}) {
+export default function AddTask({}) {
     const [text, setText]=useState('');
     const dispatch=useContext(TasksDispatchContext);
     return(
@@ -15,6 +15,7 @@ export default function AddTask({onAddTask}) {
                 });
             }}>
                 <input 
+                    className="task-input"
                     placeholder="Enter a to-do..."
                     id="textbox"
                     value={text}                                  //input - displays the current state in the input
