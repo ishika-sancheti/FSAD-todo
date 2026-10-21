@@ -1,6 +1,6 @@
 # FSAD To Do App
 
-![FSAD To Do App](./fsad-todo-app.png)
+![FSAD To Do App](./FSAD-todo-app.png)
 
 A simple and responsive to-do application built with React. It lets users add tasks, mark them as complete, delete them, and keep their task list saved in the browser using local storage.
 
